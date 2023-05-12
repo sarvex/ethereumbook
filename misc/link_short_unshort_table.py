@@ -9,18 +9,15 @@ heading = re.compile("^== (.*)$")
 resolved = {}
 
 for markup_file in markup_files:
-	markup_f = open(markup_file, 'r')
-	markup_contents = markup_f.read()
-	markup_f.close()
+	with open(markup_file, 'r') as markup_f:
+		markup_contents = markup_f.read()
 	short_links = []
 	for line in markup_contents.splitlines():
-		heading_match = heading.match(line)
-		if heading_match:
-			print("\n=== "+heading_match.group(1)+"\n|===\n| Short Link | Expanded Link")
-		short_link_match = short_link.match(line)
-		if short_link_match:
-			if short_link_match.group(1) not in short_links:
-				short_links.append(short_link_match.group(1))
+		if heading_match := heading.match(line):
+			print("\n=== " + heading_match[1] + "\n|===\n| Short Link | Expanded Link")
+		if short_link_match := short_link.match(line):
+			if short_link_match[1] not in short_links:
+				short_links.append(short_link_match[1])
 	session = requests.Session()
 	if len(short_links):
 		for link in short_links:

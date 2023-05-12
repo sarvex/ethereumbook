@@ -11,20 +11,17 @@ anchors = []
 dup_anchors = []
 
 for markup_file in markup_files:
-	markup_f = open(markup_file, 'r')
-	markup_contents = markup_f.read()
-	markup_f.close()
+	with open(markup_file, 'r') as markup_f:
+		markup_contents = markup_f.read()
 	for line in markup_contents.splitlines():
-		ref_match = ref_re.match(line)
-		if ref_match:
-			if ref_match.group(1) not in refs:
-				refs.append(ref_match.group(1))
-		anchor_match = anchor_re.match(line)
-		if anchor_match:
-			if anchor_match.group(1) not in anchors:
-				anchors.append(anchor_match.group(1))
+		if ref_match := ref_re.match(line):
+			if ref_match[1] not in refs:
+				refs.append(ref_match[1])
+		if anchor_match := anchor_re.match(line):
+			if anchor_match[1] not in anchors:
+				anchors.append(anchor_match[1])
 			else:
-				dup_anchors.append(anchor_match.group(1))
+				dup_anchors.append(anchor_match[1])
 
 print("\nAnchors: ", len(anchors))
 print("\nDuplicated Anchors: ", len(dup_anchors))
